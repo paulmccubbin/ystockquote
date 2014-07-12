@@ -2,6 +2,7 @@
 #  ystockquote : Python module - retrieve stock quote data from Yahoo Finance
 #
 #  Copyright (c) 2007,2008,2013 Corey Goldberg (cgoldberg@gmail.com)
+#  Copyright (c) 2014 Ilya Usvyatsky (usvyatsky@gmail.com)
 #
 #  license: GNU LGPL
 #
@@ -498,3 +499,25 @@ def get_historical_prices(symbol, start_date, end_date):
              keys[5]: day_data[5],
              keys[6]: day_data[6]}
     return hist_dict
+
+def get_historical_52_week_high(symbol, date):
+    """
+    Compute historical 52-week high for the given ticker symbol
+    at given date.
+    Date format is 'YYYY-MM-DD'
+
+    Returns a nested dictionary (dict of dicts).
+    outer dict keys are dates ('YYYY-MM-DD')
+    """
+    start_date = str(int(date[0:4])-1) + date[4:]
+    prices = get_historical_prices(symbol, start_date, date)
+    max_high = 0
+    for d in prices:
+        if prices[d]['High'] > max_high:
+            max_high = prices[d]['High']
+    result = {}
+    for d in prices:
+        if prices[d]['High'] == max_high:
+            result[d] = prices[d]
+    return result
+

@@ -63,6 +63,15 @@ class YStockQuoteTestCase(TestWithScenarios):
         self.assertGreater(float(prices[end_date]['Volume']), 0.0)
         self.assertGreater(float(prices[end_date]['Adj Close']), 0.0)
 
+    def test_get_historical_52_week_high(self):
+        symbol = 'GOOG'
+        date = '2014-07-10'
+        prices = ystockquote.get_historical_52_week_high(symbol, date)
+        self.assertIsInstance(prices, dict)
+        self.assertGreater(len(prices), 1)
+        item = prices.popitem()
+        self.assertEqual(item[0], '2014-04-02')
+        self.assertEqual(item[1]['High'], 604.83)
 
 if __name__ == '__main__':
     unittest.main()
